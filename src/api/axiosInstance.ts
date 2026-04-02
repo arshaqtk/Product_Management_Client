@@ -1,12 +1,16 @@
 import axios from "axios";
+import qs from "qs";
 import { useAuthStore } from "../features/auth/store/auth.store";
 
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true,
+    paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: 'repeat' });
+    }
 });
 
-api.interceptors.response.use(
+api.interceptors.response.use( 
   (response) => {
     return response;
   },
