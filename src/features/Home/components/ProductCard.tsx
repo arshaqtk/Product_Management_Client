@@ -1,4 +1,5 @@
 import { Heart, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   product: {
@@ -10,8 +11,10 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const navigate=useNavigate()
   return (
-    <div className="border border-gray-200 rounded-2xl p-5 flex flex-col relative bg-white hover:shadow-lg transition-all duration-300 group">
+    <div className="cursor-pointer border border-gray-200 rounded-2xl p-5 flex flex-col relative bg-white hover:shadow-lg transition-all duration-300 group"
+    onClick={() => navigate(`/product/${product._id}`)}>
       <button className="absolute top-4 right-4 bg-[#e2eff8] text-[#aed0eb] p-2 rounded-full hover:bg-[#c2dcf0] hover:text-[#033f63] transition-colors z-10">
         <Heart size={16} className="fill-transparent" />
       </button>

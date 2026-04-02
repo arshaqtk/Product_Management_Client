@@ -5,6 +5,7 @@ import Signup from "./features/auth/pages/signup";
 import Login from "./features/auth/pages/login";
 import { useAuthStore } from "./features/auth/store/auth.store";
 import { Home } from "./features/Home/pages/Home";
+import { ProductDetail } from "./features/Product/pages/ProductDetail";
 
 function App() {
   const { user, isCheckingAuth, checkAuth } = useAuthStore();
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<Home/>} />
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
         <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
       </Routes>
     </BrowserRouter>
   );
