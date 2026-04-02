@@ -1,6 +1,11 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getCategories } from "../services/category.service";
+import { useState } from "react";
+
+interface Category {
+  _id: string;
+  name: string;
+  subcategories: string[];
+}
 
 interface Category {
   _id: string;
@@ -13,27 +18,18 @@ interface SidebarProps {
   onSubcategoryToggle: (sub: string) => void;
   selectedCategory: string | null;
   selectedSubcategories: string[];
+  categories: Category[];
+  loading?: boolean;
 }
 
-export const Sidebar = ({ onCategorySelect, onSubcategoryToggle, selectedCategory, selectedSubcategories }: SidebarProps) => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCats = async () => {
-      try {
-        const res = await getCategories();
-        if (res.success) {
-          setCategories(res.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch categories", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCats();
-  }, []);
+export const Sidebar = ({ 
+  onCategorySelect, 
+  onSubcategoryToggle, 
+  selectedCategory, 
+  selectedSubcategories,
+  categories,
+  loading = false
+}: SidebarProps) => {
 
   return (
     <aside className="w-[240px] flex-shrink-0 pr-6 mr-6 h-full border-r border-transparent">

@@ -5,7 +5,3 @@ export const getProductById = async (id: string) => {
   return res.data;
 };
 
-export const getVariantDetails = async (productId: string, ram: string) => {
-  const res = await api.get(`/product/variant/${productId}/${ram}`);
-  return res.data;
-};

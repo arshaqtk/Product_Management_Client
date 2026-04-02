@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "../../../components/layout/Navbar";
+import toast from "react-hot-toast";
 import { Sidebar } from "../components/Sidebar";
 import { HomeActions } from "../components/HomeActions";
 import { ProductCard } from "../components/ProductCard";
 import { Pagination } from "../components/Pagination";
 import { getProducts } from "../services/product.service";
+
+import { AddCategoryModal } from "../components/AddCategoryModal";
+import { AddSubCategoryModal } from "../components/AddSubCategoryModal";
+import { useCategoryStore } from "../../../store/useCategoryStore";
 
 export const Home = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -12,9 +17,15 @@ export const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+
+  const categories = useCategoryStore((state) => state.categories);
+  const categoriesLoading = useCategoryStore((state) => state.loading);
+  const fetchCategories = useCategoryStore((state) => state.fetchCategories);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
+  const [isAddSubCategoryModalOpen, setIsAddSubCategoryModalOpen] = useState(false);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -31,12 +42,24 @@ export const Home = () => {
         setTotalItems(res.data.total);
         setTotalPages(res.data.totalPages);
       }
-    } catch (err) {
-      console.error("Failed to fetch products", err);
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || err.message || "Failed to load products";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const categoryError = useCategoryStore((state) => state.error);
+  useEffect(() => {
+    if (categoryError) {
+      toast.error(categoryError);
+    }
+  }, [categoryError]);
 
   useEffect(() => {
     fetchProducts();
@@ -69,7 +92,11 @@ export const Home = () => {
       <Navbar />
 
       <main className="flex-1 w-full max-w-[1400px] mx-auto px-8">
-        <HomeActions />
+        <HomeActions 
+          onAddCategory={() => setIsAddCategoryModalOpen(true)}
+          onAddSubCategory={() => setIsAddSubCategoryModalOpen(true)}
+          onAddProduct={() => {}}
+        />
 
         <div className="flex mt-2 pb-10">
           <Sidebar 
@@ -77,6 +104,8 @@ export const Home = () => {
             selectedSubcategories={selectedSubcategories}
             onCategorySelect={handleCategorySelect}
             onSubcategoryToggle={handleSubcategoryToggle}
+            categories={categories}
+            loading={categoriesLoading}
           />
 
           <div className="flex-1 flex flex-col pl-4 relative">
@@ -126,6 +155,16 @@ export const Home = () => {
           </div>
         </div>
       </main>
+
+      <AddCategoryModal 
+        isOpen={isAddCategoryModalOpen}
+        onClose={() => setIsAddCategoryModalOpen(false)}
+      />
+
+      <AddSubCategoryModal
+        isOpen={isAddSubCategoryModalOpen}
+        onClose={() => setIsAddSubCategoryModalOpen(false)}
+      />
     </div>
   );
 };

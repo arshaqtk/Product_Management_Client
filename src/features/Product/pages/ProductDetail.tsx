@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
+import toast from "react-hot-toast";
 import { Navbar } from "../../../components/layout/Navbar";
 import { getProductById } from "../services/productDetail.service";
 import { ProductGallery } from "../components/ProductGallery";
@@ -19,8 +20,9 @@ export const ProductDetail = () => {
            if (res.success) {
              setProduct(res.data);
            }
-         } catch (err) {
-           console.error(err);
+         } catch (err: any) {
+           const errorMsg = err.response?.data?.message || err.message || "Failed to load product details";
+           toast.error(errorMsg);
          } finally {
            setLoading(false);
          }
