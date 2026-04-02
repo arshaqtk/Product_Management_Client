@@ -7,7 +7,7 @@ type User = {
   name: string;
 };
 
-type AuthState = {
+export interface AuthState {
   user: User | null;
   isCheckingAuth: boolean;
   login: (user: User) => void;

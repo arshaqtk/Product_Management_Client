@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 import { Navbar } from "../../../components/layout/Navbar";
 import toast from "react-hot-toast";
 import { Sidebar } from "../components/Sidebar";
@@ -10,7 +11,8 @@ import { getProducts } from "../services/product.service";
 import { AddCategoryModal } from "../components/AddCategoryModal";
 import { AddSubCategoryModal } from "../components/AddSubCategoryModal";
 import { AddProductModal } from "../../Product/components/AddProductModal";
-import { useCategoryStore } from "../../../store/useCategoryStore";
+import { useSearchStore, type SearchState } from "../../../store/useSearchStore";
+import { useCategoryStore, type CategoryStore } from "../../../store/useCategoryStore";
 import type { Product } from "../../Product/types/product.types";
 
 export const Home = () => {
@@ -20,9 +22,12 @@ export const Home = () => {
     const [limit, setLimit] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
 
-    const categories = useCategoryStore((state) => state.categories);
-    const categoriesLoading = useCategoryStore((state) => state.loading);
-    const fetchCategories = useCategoryStore((state) => state.fetchCategories);
+    const searchQuery = useSearchStore((state: SearchState) => state.searchQuery);
+    const clearSearch = useSearchStore((state: SearchState) => state.clearSearch);
+
+    const categories = useCategoryStore((state: CategoryStore) => state.categories);
+    const categoriesLoading = useCategoryStore((state: CategoryStore) => state.loading);
+    const fetchCategories = useCategoryStore((state: CategoryStore) => state.fetchCategories);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
@@ -38,6 +43,7 @@ export const Home = () => {
                 limit: limit,
                 categoryId: selectedCategory || undefined,
                 subcategory: selectedSubcategories.length > 0 ? selectedSubcategories : undefined,
+                search: searchQuery || undefined,
             };
             const res = await getProducts(params);
             if (res.success) {
@@ -57,7 +63,7 @@ export const Home = () => {
         fetchCategories();
     }, []);
 
-    const categoryError = useCategoryStore((state) => state.error);
+    const categoryError = useCategoryStore((state: CategoryStore) => state.error);
     useEffect(() => {
         if (categoryError) {
             toast.error(categoryError);
@@ -65,8 +71,12 @@ export const Home = () => {
     }, [categoryError]);
 
     useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
+
+    useEffect(() => {
         fetchProducts();
-    }, [currentPage, limit, selectedCategory, selectedSubcategories]);
+    }, [currentPage, limit, selectedCategory, selectedSubcategories, searchQuery]);
 
     const handleCategorySelect = (id: string | null) => {
         setSelectedCategory(id);
@@ -90,6 +100,15 @@ export const Home = () => {
         setCurrentPage(1);
     };
 
+    const handleClearAllFilters = () => {
+        setSelectedCategory(null);
+        setSelectedSubcategories([]);
+        clearSearch();
+        setCurrentPage(1);
+    };
+
+    const isFiltered = !!searchQuery || !!selectedCategory || selectedSubcategories.length > 0;
+
     return (
         <div className="min-h-screen bg-white font-sans flex flex-col">
             <Navbar />
@@ -112,6 +131,28 @@ export const Home = () => {
                     />
 
                     <div className="flex-1 flex flex-col pl-4 relative">
+                        {isFiltered && (
+                            <div className="mb-6 flex items-center justify-between bg-gray-50/50 px-6 py-4 rounded-2xl border border-gray-100">
+                                <div className="flex items-center gap-3">
+                                    {searchQuery ? (
+                                        <>
+                                            <span className="text-gray-500 text-sm">Showing results for:</span>
+                                            <span className="text-[#033f63] font-bold">"{searchQuery}"</span>
+                                        </>
+                                    ) : (
+                                        <span className="text-gray-500 text-sm font-medium">Filters applied</span>
+                                    )}
+                                </div>
+                                <button 
+                                    onClick={handleClearAllFilters}
+                                    className="text-sm font-semibold text-[#eda52d] hover:text-[#d99527] transition-colors flex items-center gap-1.5"
+                                >
+                                    <X size={14} strokeWidth={2.5} />
+                                    Clear all filters
+                                </button>
+                            </div>
+                        )}
+
                         {/* Minimal overlay for filtering feedback */}
                         {loading && products.length > 0 && (
                             <div className="absolute inset-0 bg-white/40 z-20 flex items-start justify-center pt-20 backdrop-blur-[1px]">

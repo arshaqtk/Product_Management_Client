@@ -18,3 +18,8 @@ export const updateProduct = async (id: string, formData: FormData) => {
   });
   return res.data;
 };
+
+export const getProductSuggestions = async (q: string) => {
+  const res = await api.get("/product/suggestions", { params: { q } });
+  return res.data;
+};

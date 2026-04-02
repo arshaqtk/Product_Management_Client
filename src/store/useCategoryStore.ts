@@ -3,7 +3,7 @@ import { getCategoriesApi, createCategoryApi, createSubCategoryApi } from "../fe
 
 import type { Category } from "../features/Home/types/category.types";
 
-interface CategoryStore {
+export interface CategoryStore {
   categories: Category[];
   loading: boolean;
   error: string | null;
