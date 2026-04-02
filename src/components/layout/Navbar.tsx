@@ -1,14 +1,15 @@
 import { Search, Heart, ShoppingCart } from "lucide-react";
 import { useAuthStore } from "../../features/auth/store/auth.store";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const user = useAuthStore((state) => state.user);
-
+  const navigate = useNavigate();
   return (
     <nav className="bg-[#033f63] h-[80px] flex items-center justify-between px-10 text-white w-full shadow-md z-10">
       <div className="w-[200px]">
         {/* Placeholder for Logo */}
-        <span className="text-xl font-bold tracking-wider">SECLOB</span>
+        <span className="text-xl font-bold tracking-wider cursor-pointer" onClick={() => navigate("/")}>SECLOB</span>
       </div>
       
       {/* Search Bar */}

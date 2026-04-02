@@ -6,29 +6,33 @@ import { Navbar } from "../../../components/layout/Navbar";
 import { getProductById } from "../services/productDetail.service";
 import { ProductGallery } from "../components/ProductGallery";
 import { ProductInfo } from "../components/ProductInfo";
+import { AddProductModal } from "../components/AddProductModal";
+import type { Product } from "../types/product.types";
 
 export const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const fetchDetail = async () => {
+    if (!id) return;
+    try {
+      setLoading(true);
+      const res = await getProductById(id);
+      if (res.success) {
+        setProduct(res.data);
+      }
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || err.message || "Failed to load product details";
+      toast.error(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (id) {
-       const fetchDetail = async () => {
-         try {
-           const res = await getProductById(id);
-           if (res.success) {
-             setProduct(res.data);
-           }
-         } catch (err: any) {
-           const errorMsg = err.response?.data?.message || err.message || "Failed to load product details";
-           toast.error(errorMsg);
-         } finally {
-           setLoading(false);
-         }
-       };
-       fetchDetail();
-    }
+    fetchDetail();
   }, [id]);
 
   if (loading) {
@@ -92,11 +96,19 @@ export const ProductDetail = () => {
                initialPrice={product.variants[0]?.price}
                initialStock={product.variants[0]?.qty}
                variants={product.variants}
+               onEdit={() => setIsEditModalOpen(true)}
              />
           </div>
 
         </div>
       </main>
+
+      <AddProductModal 
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSuccess={() => fetchDetail()}
+        initialData={product}
+      />
     </div>
   );
 };

@@ -1,11 +1,7 @@
 import { create } from "zustand";
 import { getCategoriesApi, createCategoryApi, createSubCategoryApi } from "../features/Home/services/category.service";
 
-interface Category {
-  _id: string;
-  name: string;
-  subcategories: string[];
-}
+import type { Category } from "../features/Home/types/category.types";
 
 interface CategoryStore {
   categories: Category[];

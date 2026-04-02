@@ -13,9 +13,10 @@ interface ProductInfoProps {
   initialPrice: number;
   initialStock: number;
   variants: Variant[];
+  onEdit: () => void;
 }
 
-export const ProductInfo = ({ productId, title, initialPrice, initialStock, variants }: ProductInfoProps) => {
+export const ProductInfo = ({ productId, title, initialPrice, initialStock, variants, onEdit }: ProductInfoProps) => {
   const [selectedRam, setSelectedRam] = useState(variants[0]?.ram || "");
   const [quantity, setQuantity] = useState(1);
 
@@ -87,7 +88,10 @@ export const ProductInfo = ({ productId, title, initialPrice, initialStock, vari
 
       {/* Action Buttons */}
       <div className="flex items-center gap-4">
-        <button className="flex-1 bg-[#eda52d] text-white py-4 rounded-full font-bold text-sm shadow-md hover:bg-[#db9624] transition-all transform active:scale-[0.98]">
+        <button 
+          onClick={onEdit}
+          className="flex-1 bg-[#eda52d] text-white py-4 rounded-full font-bold text-sm shadow-md hover:bg-[#db9624] transition-all transform active:scale-[0.98]"
+        >
            Edit product
         </button>
         <button className="flex-1 bg-[#eda52d] text-white py-4 rounded-full font-bold text-sm shadow-md hover:bg-[#db9624] transition-all transform active:scale-[0.98]">

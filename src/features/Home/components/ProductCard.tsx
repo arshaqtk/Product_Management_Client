@@ -1,13 +1,10 @@
 import { Heart, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import type { Product } from "../../Product/types/product.types";
+
 interface ProductCardProps {
-  product: {
-    _id: string;
-    title: string;
-    price: number;
-    image?: string;
-  };
+  product: Product;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
@@ -43,7 +40,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       </div>
       
       <h3 className="font-bold text-[#033f63] text-sm mb-1 line-clamp-1">{product.title}</h3>
-      <p className="font-bold text-gray-800 mb-3 text-sm">${product.price.toFixed(2)}</p>
+      <p className="font-bold text-gray-800 mb-3 text-sm">${product.price?.toFixed(2) || "0.00"}</p>
       
       {/* Stars */}
       <div className="flex gap-1 mt-auto">

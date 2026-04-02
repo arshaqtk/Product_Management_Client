@@ -1,17 +1,7 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
-interface Category {
-  _id: string;
-  name: string;
-  subcategories: string[];
-}
-
-interface Category {
-  _id: string;
-  name: string;
-  subcategories: string[];
-}
+import type { Category } from "../types/category.types";
 
 interface SidebarProps {
   onCategorySelect: (id: string | null) => void;
