@@ -92,8 +92,6 @@ export const WishlistDrawer = ({ isOpen, onClose }: WishlistDrawerProps) => {
                   <div className="flex items-baseline gap-2">
                     <p className="text-sm font-bold text-gray-900">${item.price.toFixed(2)}</p>
                   </div>
-                  
-                  <p className="text-sm font-bold text-gray-900">${item.price.toFixed(2)}</p>
                 </div>
 
                 {/* Remove Button */}
