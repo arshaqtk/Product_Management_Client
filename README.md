@@ -1,83 +1,99 @@
-# Seclob Product Management Frontend
+# Seclob Frontend
 
-A modern, high-performance product management dashboard built with React, Vite, and TypeScript. Featuring a premium design, global state management, and real-time updates.
+React + Vite frontend for browsing products, managing wishlists, and handling authentication flows.
 
-## ✨ Features
+## Stack
 
-- **Dynamic Product Browsing**: 
-    - Paginated product grid with custom row controls.
-    - Advanced filtering by category and multiple subcategories.
-    - Global search with debounced typing and smart suggestions.
-- **Wishlist Experience**: 
-    - Real-time wishlist toggling from product cards or detail pages.
-    - **Slide-out Wishlist Drawer** (using React Portals) for a seamless management experience.
-    - Visual counters in the navigation bar.
-- **Product Management**: 
-    - Detailed product views with local variant selection (RAM/Price/Stock).
-    - Unified **Add/Edit Product Modal** with multi-image support and validation.
-- **User Authentication**: 
-    - Clean, modern Signup and Login flows.
-    - Protected actions (Wishlist, Add/Edit) for authenticated users.
-- **Premium UI/UX**: 
-    - Responsive layout with a sticky category sidebar.
-    - Rich micro-animations and toast notifications (React Hot Toast).
-    - Sleek dark blue and amber color palette.
+- React 19
+- Vite
+- TypeScript
+- Zustand
+- Tailwind CSS 4
+- React Router DOM 7
+- Axios
+- React Hot Toast
 
-## 🚀 Technologies
+## Features
 
-- **Frontend Core**: React 19 + Vite
-- **Language**: TypeScript
-- **State Management**: Zustand
-- **Styling**: Tailwind CSS 4.0
-- **Icons**: Lucide React
-- **Routing**: React Router DOM 7
-- **HTTP Client**: Axios
-- **Notifications**: React Hot Toast
+- Product listing with pagination, category filters, subcategory filters, and search
+- Debounced search suggestions in the navbar
+- Product detail page with gallery and edit flow
+- Login and signup flows
+- Wishlist drawer for authenticated users
+- Shared Axios client with cookie-based auth support
 
-## 🛠️ Getting Started
+## Installation
 
-### Installation
+```bash
+npm install
+```
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+## Environment Variables
 
-2. Configure environment variables (create a `.env` file):
-   ```env
-   VITE_API_URL=http://localhost:5000/api
-   ```
+Create `client/product-frontend/.env` with:
 
-### Running the App
+```env
+VITE_API_URL=http://localhost:5000/api
+```
 
-- **Development**:
-  ```bash
-  npm run dev
-  ```
-- **Production Build**:
-  ```bash
-  npm run build
-  npm run preview
-  ```
+For production on Vercel, set `VITE_API_URL` to your deployed backend API base URL, for example:
 
-## 🏗️ Project Architecture
+```env
+VITE_API_URL=https://your-backend-service.onrender.com/api
+```
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
+```
+
+## Run Locally
+
+```bash
+npm run dev
+```
+
+## Vercel Deployment
+
+This app is ready for Vercel deployment.
+
+### Recommended Vercel settings
+
+- Framework Preset: `Vite`
+- Root Directory: `client/product-frontend`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+
+### Required Vercel environment variable
+
+- `VITE_API_URL=https://your-backend-service.onrender.com/api`
+
+### Routing support
+
+A [vercel.json](/d:/bridgeon/MachineTasks/Seclob/client/product-frontend/vercel.json) file is included so client-side routes like `/login` and `/product/:id` rewrite to `index.html` correctly.
+
+## Project Structure
 
 ```text
 src/
-├── api/            # Axios instance and base interceptors
-├── components/     # Shared layout components (Navbar, WishlistDrawer, etc.)
-├── features/       # Feature-based modular structure
-│   ├── auth/       # Authentication logic (Signup, Login, Store)
-│   ├── Home/       # Main dashboard, Sidebar, ProductCard
-│   └── Product/    # Product details, Gallery, Add/Edit service
-├── store/          # Global Zustand stores (Search, Category, Wishlist)
-└── App.tsx         # Main application entry and routing
+|-- api/
+|-- assets/
+|-- components/
+|-- features/
+|   |-- auth/
+|   |-- Home/
+|   `-- Product/
+|-- store/
+|-- App.tsx
+`-- main.tsx
 ```
 
-## 🎨 Design System
+## Notes
 
-The application follows a curated, professional color palette:
-- **Primary**: `#033f63` (Deep Ocean Blue)
-- **Accent**: `#eda52d` (Vibrant Amber)
-- **Background**: Modern white/gray-50 mix for depth.
-- **Typography**: Clean sans-serif hierarchy for maximum readability.
+- The frontend expects cookie-based auth from the backend
+- `withCredentials: true` is enabled in the shared Axios instance
+- Make sure backend CORS allows the deployed Vercel frontend URL

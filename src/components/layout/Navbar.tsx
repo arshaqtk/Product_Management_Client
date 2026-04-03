@@ -101,6 +101,15 @@ export const Navbar = () => {
     }
   };
 
+  const handleAccountAction = () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    setIsWishlistOpen(true);
+  };
+
   return (
     <nav className="bg-[#033f63] h-[80px] flex items-center justify-between px-10 text-white w-full shadow-md z-50">
       <div className="w-[200px]">
@@ -170,7 +179,7 @@ export const Navbar = () => {
       {/* Actions */}
       <div className="flex items-center gap-8 w-[200px] justify-end">
         <div 
-          onClick={() => setIsWishlistOpen(true)}
+          onClick={handleAccountAction}
           className="flex items-center gap-2 cursor-pointer hover:text-[#eda52d] transition-colors"
         >
           <div className="relative">
