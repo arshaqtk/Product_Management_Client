@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# Seclob Product Management Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, high-performance product management dashboard built with React, Vite, and TypeScript. Featuring a premium design, global state management, and real-time updates.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Dynamic Product Browsing**: 
+    - Paginated product grid with custom row controls.
+    - Advanced filtering by category and multiple subcategories.
+    - Global search with debounced typing and smart suggestions.
+- **Wishlist Experience**: 
+    - Real-time wishlist toggling from product cards or detail pages.
+    - **Slide-out Wishlist Drawer** (using React Portals) for a seamless management experience.
+    - Visual counters in the navigation bar.
+- **Product Management**: 
+    - Detailed product views with local variant selection (RAM/Price/Stock).
+    - Unified **Add/Edit Product Modal** with multi-image support and validation.
+- **User Authentication**: 
+    - Clean, modern Signup and Login flows.
+    - Protected actions (Wishlist, Add/Edit) for authenticated users.
+- **Premium UI/UX**: 
+    - Responsive layout with a sticky category sidebar.
+    - Rich micro-animations and toast notifications (React Hot Toast).
+    - Sleek dark blue and amber color palette.
 
-## React Compiler
+## 🚀 Technologies
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend Core**: React 19 + Vite
+- **Language**: TypeScript
+- **State Management**: Zustand
+- **Styling**: Tailwind CSS 4.0
+- **Icons**: Lucide React
+- **Routing**: React Router DOM 7
+- **HTTP Client**: Axios
+- **Notifications**: React Hot Toast
 
-## Expanding the ESLint configuration
+## 🛠️ Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Installation
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+2. Configure environment variables (create a `.env` file):
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Running the App
+
+- **Development**:
+  ```bash
+  npm run dev
+  ```
+- **Production Build**:
+  ```bash
+  npm run build
+  npm run preview
+  ```
+
+## 🏗️ Project Architecture
+
+```text
+src/
+├── api/            # Axios instance and base interceptors
+├── components/     # Shared layout components (Navbar, WishlistDrawer, etc.)
+├── features/       # Feature-based modular structure
+│   ├── auth/       # Authentication logic (Signup, Login, Store)
+│   ├── Home/       # Main dashboard, Sidebar, ProductCard
+│   └── Product/    # Product details, Gallery, Add/Edit service
+├── store/          # Global Zustand stores (Search, Category, Wishlist)
+└── App.tsx         # Main application entry and routing
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🎨 Design System
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The application follows a curated, professional color palette:
+- **Primary**: `#033f63` (Deep Ocean Blue)
+- **Accent**: `#eda52d` (Vibrant Amber)
+- **Background**: Modern white/gray-50 mix for depth.
+- **Typography**: Clean sans-serif hierarchy for maximum readability.

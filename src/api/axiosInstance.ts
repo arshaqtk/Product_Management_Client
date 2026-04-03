@@ -10,26 +10,42 @@ export const api = axios.create({
     }
 });
 
+let refreshPromise: Promise<void> | null = null;
+
+const AUTH_ROUTES_TO_SKIP = ["/auth/login", "/auth/signup", "/auth/refresh", "/auth/logout"];
+
+const shouldSkipRefresh = (url?: string) => {
+  if (!url) return false;
+  return AUTH_ROUTES_TO_SKIP.some((route) => url.includes(route));
+};
+
 api.interceptors.response.use( 
   (response) => {
     return response;
   },
   async (error) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config as typeof error.config & { _isRetry?: boolean };
     
-    // Check if the error is due to an unauthorized token and it has not been retried yet
-    if (error.response?.status === 401 && !originalRequest._isRetry) {
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._isRetry &&
+      !shouldSkipRefresh(originalRequest.url)
+    ) {
       originalRequest._isRetry = true;
-      
+
       try {
-        await api.post("/auth/refresh");
-        
-        // If refresh is successful, retry the original request
+        if (!refreshPromise) {
+          refreshPromise = api.post("/auth/refresh").then(() => undefined);
+        }
+
+        await refreshPromise;
         return api.request(originalRequest);
       } catch (refreshError) {
-        // If the refresh token also fails or is expired, clear user state
-        useAuthStore.getState().logout();
+        await useAuthStore.getState().logout();
         return Promise.reject(refreshError);
+      } finally {
+        refreshPromise = null;
       }
     }
     
