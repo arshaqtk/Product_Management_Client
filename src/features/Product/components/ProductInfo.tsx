@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Check, Heart, Minus, Plus, X } from "lucide-react";
+import { Check, Minus, Plus, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useWishlistStore } from "../../../store/useWishlistStore";
+import { useAuthStore } from "../../auth/store/auth.store";
+import toast from "react-hot-toast";
 
 interface Variant {
   ram: string;
@@ -19,8 +23,27 @@ interface ProductInfoProps {
 export const ProductInfo = ({ productId, title, initialPrice, initialStock, variants, onEdit }: ProductInfoProps) => {
   const [selectedRam, setSelectedRam] = useState(variants[0]?.ram || "");
   const [quantity, setQuantity] = useState(1);
-
-  // Derived state: find the current variant details locally
+   const navigate = useNavigate();
+    const user = useAuthStore((state) => state.user);
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
+    
+    const isFavorited = isInWishlist(productId);
+  
+    const handleWishlistClick = async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!user) {
+        toast.error("Please login to add items to wishlist");
+        navigate("/login");
+        return;
+      }
+  
+      if (isFavorited) {
+        await removeFromWishlist(productId);
+      } else {
+        await addToWishlist(productId);
+      }
+    };
+  // find the current variant details locally
   const currentVariant = variants.find(v => v.ram === selectedRam) || { price: initialPrice, qty: initialStock };
   const price = currentVariant.price;
   const stock = currentVariant.qty;
@@ -94,11 +117,8 @@ export const ProductInfo = ({ productId, title, initialPrice, initialStock, vari
         >
            Edit product
         </button>
-        <button className="flex-1 bg-[#eda52d] text-white py-4 rounded-full font-bold text-sm shadow-md hover:bg-[#db9624] transition-all transform active:scale-[0.98]">
-           Buy it now
-        </button>
-        <button className="p-4 bg-gray-100 text-gray-400 rounded-full hover:bg-gray-200 hover:text-gray-600 transition-all shadow-sm">
-           <Heart size={20} />
+        <button onClick={handleWishlistClick} className="flex-1 bg-[#eda52d] text-white py-4 rounded-full font-bold text-sm shadow-md hover:bg-[#db9624] transition-all transform active:scale-[0.98]">
+          {isFavorited ? "Remove from Wishlist" : "Add to Wishlist"}
         </button>
       </div>
     </div>

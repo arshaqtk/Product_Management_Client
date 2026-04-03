@@ -1,9 +1,11 @@
-import { Search, Heart, ShoppingCart, Loader2, X } from "lucide-react";
+import { Search, Heart, Loader2, X } from "lucide-react";
 import { useAuthStore, type AuthState } from "../../features/auth/store/auth.store";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { getProductSuggestions } from "../../features/Home/services/product.service";
 import { useSearchStore, type SearchState } from "../../store/useSearchStore";
+import { useWishlistStore } from "../../store/useWishlistStore";
+import { WishlistDrawer } from "./WishlistDrawer";
 
 interface Suggestion {
   _id: string;
@@ -16,13 +18,23 @@ export const Navbar = () => {
   
   const setSearchQuery = useSearchStore((state: SearchState) => state.setSearchQuery);
   const clearGlobalSearch = useSearchStore((state: SearchState) => state.clearSearch);
+  
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchWishlist();
+    }
+  }, [user, fetchWishlist]);
 
   // Debounced search
   useEffect(() => {
@@ -157,25 +169,26 @@ export const Navbar = () => {
 
       {/* Actions */}
       <div className="flex items-center gap-8 w-[200px] justify-end">
-        <div className="flex items-center gap-2 cursor-pointer hover:text-[#eda52d] transition-colors">
+        <div 
+          onClick={() => setIsWishlistOpen(true)}
+          className="flex items-center gap-2 cursor-pointer hover:text-[#eda52d] transition-colors"
+        >
           <div className="relative">
             <Heart size={20} />
-            <span className="absolute -top-2 -right-2 bg-[#eda52d] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-              0
-            </span>
+            {wishlistItems.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#eda52d] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                {wishlistItems.length}
+              </span>
+            )}
           </div>
           <span className="text-sm font-medium">{user ? user.name.split(" ")[0] : "Sign in"}</span>
         </div>
-        <div className="flex items-center gap-2 cursor-pointer hover:text-[#eda52d] transition-colors">
-          <div className="relative">
-            <ShoppingCart size={20} />
-            <span className="absolute -top-2 -right-2 bg-[#eda52d] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-              0
-            </span>
-          </div>
-          <span className="text-sm font-medium">Cart</span>
-        </div>
       </div>
+
+      <WishlistDrawer 
+        isOpen={isWishlistOpen} 
+        onClose={() => setIsWishlistOpen(false)} 
+      />
     </nav>
   );
 };

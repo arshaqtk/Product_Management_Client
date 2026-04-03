@@ -1,4 +1,3 @@
-import React from "react";
 import { SignupIntro } from "../components/SignupIntro";
 import { SignupForm } from "../components/SignupForm";
 
